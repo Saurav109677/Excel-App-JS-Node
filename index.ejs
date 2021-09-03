@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+   
+    <!-- <script src="./node_modules\jquery\dist\jquery.min.js"></script> -->
+    <!-- <script data-main="main" src="./require.js"></script> -->
+</head>
+<body>
+    
+    <div class="menu">Menu</div>
+
+    <div class="menu-option">Menu Options</div>
+
+    <div class="formula-input">
+        <input type="text" id="address" disabled>
+        <input type="text" id="formula">
+    </div>
+
+    <div class="cells">
+        <%
+            for(let i=0;i<100;i++){  %>
+                <div class="row">
+                    <%for(let j=0;j<100;j++){%>
+                        <div class="cell" contenteditable="true" rid=<%=i%> cid=<%=j%> > </div>
+                        <%}%>
+                </div>
+          <%  }
+        %>
+    </div>
+
+    <div class="sheets">Sheets</div>
+    <script src="./script.js"></script>
+</body>
+</html>
