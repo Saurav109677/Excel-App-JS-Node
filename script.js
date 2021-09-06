@@ -26,21 +26,25 @@ $("document").ready(function(){
 
     $("#formula").on("blur", function(){
         let formula = $(this).val();
-        // console.log(formula);
-
-        let answer = solveFormula(formula);
-
+        //let address = $("#address").val();
         let lastCellRowId = $(lastCellVisited).attr("rid");
         let lastCellColId = $(lastCellVisited).attr("cid");
-        //update in db
-            db[lastCellRowId][lastCellColId].value=answer+"";
-            db[lastCellRowId][lastCellColId].formula=formula+"";
-            console.log(db[lastCellRowId][lastCellColId]);
-        //update in ui
-            $(lastCellVisited).text(answer);
+        let cellObject = db[lastCellRowId][lastCellColId];
+
+        // if smae formula is written , why to re-calculate
+        if(cellObject.formula != formula){
+            let answer = solveFormula(formula , cellObject);
+            //update in db
+                db[lastCellRowId][lastCellColId].value=answer+"";
+                db[lastCellRowId][lastCellColId].formula=formula+"";
+                console.log(db[lastCellRowId][lastCellColId]);
+            //update in ui
+                $(lastCellVisited).text(answer);
+
+        }
     })
 
-    function solveFormula(formula){
+    function solveFormula(formula , cellObject){
         let fComponents = formula.split(" ");
         console.log(fComponents);
         for(let i=0;i<fComponents.length;i++){
@@ -48,13 +52,31 @@ $("document").ready(function(){
             if(fComp[0]>='A' && fComp[0]<='Z'){
                 let cellName = fComp;
                 let {rowId,colId} = getRowAndColId(cellName);
-                console.log(rowId,colId);
-                let cellObj = db[rowId][colId];
-                formula = formula.replace(cellName,cellObj.value);
+                //console.log(rowId,colId);
+                let parentCellObj = db[rowId][colId];
+                formula = formula.replace(cellName,parentCellObj.value);
+
+                if(cellObject){
+                    // adding child name or dependents cell nameto respective parent cell
+                    addSelfToParentsChildrens(parentCellObj , cellObject);
+
+                    //  adding parent cell name OR dependents cell name to the last selected cell
+                    updateParentsOfSelfCellObject(cellObject , cellName);
+                }
             }
         }
-        console.log(formula);
+        // console.log(formula);
         return eval(formula);
+    }
+
+    function addSelfToParentsChildrens(parentObj , selfObj){
+        // B1 will be added to A1 and A2 childrens
+        parentObj.childrens.push(selfObj.name);
+    }
+
+    function updateParentsOfSelfCellObject(selfObj, parentCellName){
+        // B1 will add A1 and A2 in its parents field
+        selfObj.parents.push(parentCellName);
     }
 
     function getRowAndColId(cellName){
@@ -70,9 +92,31 @@ $("document").ready(function(){
         let rowId = Number($(this).attr("rid"));
         let colId = Number($(this).attr("cid"));
         db[rowId][colId].value = value;
+        let cellObj = db[rowId][colId];
+        // updates its children cell too
+        updateChildren(cellObj);
 
-        console.log(lastCellVisited);
+        console.log(db);
     })
+
+    function updateChildren(cellObj){
+        let childrens = cellObj.childrens;
+        console.log(childrens);
+        for(let i=0;i<childrens.length;i++){
+            let {rowId , colId} = getRowAndColId(childrens[i]);
+            let childObj = db[rowId][colId];
+            let updatedVal = solveFormula(childObj.formula);
+            //update in db
+            childObj.value = updatedVal;
+            // update in ui
+            // selector -> .cell[rid="0"][cid="1"]
+            $(`.cell[rid=${rowId}][cid=${colId}]`).text(updatedVal);
+            // tell all the grand childrens also to update
+            // Algo used DFS ----
+            updateChildren(childObj);
+        }
+        
+    }
 })
 
 function init(){
@@ -83,7 +127,9 @@ function init(){
              let cellObject = {
                  name : cellAdd,
                  value : "",
-                 formula : ""
+                 formula : "",
+                 childrens : [],
+                 parents : []
              }
 
             row.push(cellObject);
