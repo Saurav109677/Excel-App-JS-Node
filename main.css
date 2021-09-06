@@ -26,8 +26,11 @@ html,body{
 
 .cells{
     border: 1px solid;
-    height: calc(100vh - 170px);
-    overflow: auto;
+    /* height: calc(100vh - 170px); */
+    /* overflow: auto; */
+    position: absolute;
+    top: 25px;
+    left: 24px;
 }
 
 .sheets{
@@ -37,11 +40,64 @@ html,body{
 
 .cell{
     border: 1px solid;
-    height: 25px;
-    background-color: lightgreen;
-    min-width: 65px;
+    min-height: 25px;
+    background-color: white;
+    max-width: 65px;
+    width: 65px;
 }
 
 .row{
     display: flex;
+}
+
+.content{
+    border: 1px solid;
+    /* height: 25px; */
+    background-color: lightgreen;
+    /* min-width: 65px; */
+    height: calc(100vh - 170px);
+    overflow: auto;
+    position: relative;
+}
+
+.top-left-corner{
+    width: 25px;
+    height: 25px;
+    background-color: lightgrey;
+    position: absolute;
+    z-index: 3;
+}
+
+.top-row{
+    background-color: lightgreen;
+    display: flex;
+    position: absolute;
+    /* heigth: 0px; */
+    left: 24px;
+    top: 0px;
+    /* min-height: 25px; */
+    z-index: 2;
+    height: 25px;
+}
+
+
+.top-row-cell{
+    border: 1px solid;
+    min-width: 65px;
+    text-align: center;
+}
+
+.left-col{
+    position: absolute;
+    z-index: 2;
+    top: 26px;
+    background-color: lightgreen;
+}
+
+.left-col-cell{
+       /* border: 1px solid; */
+       border: 1px solid;
+       width: 25px;
+       text-align: center;
+       height: 25px;
 }

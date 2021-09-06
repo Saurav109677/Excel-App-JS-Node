@@ -13,6 +13,26 @@ let lastCellVisited ;
 $("document").ready(function(){
 
     console.log("loaded")
+
+    $(".content").on("scroll",function(){
+       let left =  $(this).scrollLeft();
+        let top = $(this).scrollTop();
+        $(".top-row").css("top",top+"px");
+        $(".top-row-cell").css("top",top+"px");
+
+        $(".left-col").css("left",left+"px")
+        $(".left-col-cell").css("left",left+"px")
+
+        $(".top-left-corner").css("left",left+"px")
+        $(".top-left-corner").css("top",top+"px")        
+    })
+
+    $(".cell").on("keyup",function(){
+        let height = $(this).height();
+        let rowId = $(this).attr("rid");
+        $(`.left-col-cell[cellId=${rowId}]`).css("height",height)
+    })
+    
     $(".cell").on("click",function(){
         let rowId = Number($(this).attr("rid"))+1;
         let colId = Number($(this).attr("cid"));
@@ -33,11 +53,14 @@ $("document").ready(function(){
 
         // if smae formula is written , why to re-calculate
         if(cellObject.formula != formula){
+            removeFormula(cellObject);
             let answer = solveFormula(formula , cellObject);
             //update in db
                 db[lastCellRowId][lastCellColId].value=answer+"";
                 db[lastCellRowId][lastCellColId].formula=formula+"";
-                console.log(db[lastCellRowId][lastCellColId]);
+            //update the childrens also
+                 updateChildren(cellObject);
+                //console.log(db[lastCellRowId][lastCellColId]);
             //update in ui
                 $(lastCellVisited).text(answer);
 
@@ -91,8 +114,15 @@ $("document").ready(function(){
         let value = $(this).text();
         let rowId = Number($(this).attr("rid"));
         let colId = Number($(this).attr("cid"));
-        db[rowId][colId].value = value;
         let cellObj = db[rowId][colId];
+
+        // if formula is there .. the cell want to be have independedn value
+        if(cellObj.formula && cellObj.value!=value){
+            removeFormula(cellObj);
+            $("#formula").val("");
+        }
+
+        db[rowId][colId].value = value;
         // updates its children cell too
         updateChildren(cellObj);
 
@@ -117,7 +147,21 @@ $("document").ready(function(){
         }
         
     }
+
+    
+    function removeFormula(cellObj){
+        cellObj.formula = "";
+                for(let i=0;i<cellObj.parents.length;i++){
+                    // remove me from all parents
+                    let {rowId, colId} = getRowAndColId(cellObj.parents[i]);
+                    let parObj = db[rowId][colId];
+                    parObj = parObj.childrens.filter((child)=> child != cellObj.name);
+                }
+            
+                cellObj.parents=[];
+    }
 })
+
 
 function init(){
     for(let i=0;i<100;i++){
