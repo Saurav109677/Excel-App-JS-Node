@@ -9,12 +9,41 @@
    
     <!-- <script src="./node_modules\jquery\dist\jquery.min.js"></script> -->
     <!-- <script data-main="main" src="./require.js"></script> -->
+    <!-- <script src="./script.js"></script> -->
 </head>
 <body>
     
-    <div class="menu">Menu</div>
+    <div class="menu">
+        <div class = "file-menu selected-menu-option">File</div>
+        <div class = "home-menu">Home</div>
+    </div>
 
-    <div class="menu-option">Menu Options</div>
+    <div class="menu-option">
+        <div class = "file-menu-option">
+            <div class="new-option">New</div>
+            <div class="open-option">Open</div>
+            <div class="save-option">Save</div>
+        </div>
+        <div class = "home-menu-option">
+            <div class="one">
+                <div class="font-select">
+                    <select>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option>
+                        <option>D</option>
+                    </select>
+                </div>
+                <div class="bold-u-italic">
+                    <div class="bold"></div>
+                    <div class="underline"></div>
+                    <div class="italic"></div>
+                </div>
+            </div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
+    </div>
 
     <div class="formula-input">
         <input type="text" id="address" disabled>
@@ -54,6 +83,7 @@
 </div>
 
     <div class="sheets">Sheets</div>
+
     <script src="./script.js"></script>
 </body>
 </html>

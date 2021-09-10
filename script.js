@@ -6,6 +6,14 @@
 // import { createRequire } from 'module';
 // const require = createRequire(import.meta.url);
 const $ = require('jquery')
+// const dialog = require("electron").remote
+// const { dialog } = require('electron');
+// const dialog = require('electron').remote.dialog
+const remote = require('@electron/remote')
+// const dialog = remote.dialog;
+const fs = require("fs");
+const { log } = require('console');
+
 
 let db = [];
 let lastCellVisited ;
@@ -13,6 +21,70 @@ let lastCellVisited ;
 $("document").ready(function(){
 
     console.log("loaded")
+
+    $(".new-option").on("click",function(){
+        db=[] ;
+        for(let i=0;i<100;i++){
+            let row=[];
+            for(let j=0;j<26;j++){
+                let cellAdd = String.fromCharCode(65+j)+(i+1);
+                 let cellObject = {
+                     name : cellAdd,
+                     value : "",
+                     formula : "",
+                     childrens : [],
+                     parents : []
+                 }
+    
+                row.push(cellObject);
+                $(`.cell[rid=${i}][cid=${j}]`).html("");
+            }
+            db.push(row);
+           
+        }
+    })
+
+    $(".open-option").on("click",function(){
+        let filePath= remote.dialog.showOpenDialogSync();
+        let dataString = fs.readFileSync(filePath[0],'utf-8');
+        let data = JSON.parse(dataString);
+        console.log(data);
+        db = data;
+        //update UI
+        for(let i=0;i<100;i++){
+            for(let j=0;j<26;j++){
+                $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
+            }
+        }
+        
+    })
+
+    $(".save-option").on("click",function(){
+        let filePath = remote.dialog.showSaveDialogSync();
+        let data = JSON.stringify(db);
+        fs.writeFileSync(filePath , data);
+        alert('File Saved!');
+    })
+
+    $(".file-menu").on("click",function(){
+        console.log("file clicked");
+        $(".file-menu-option").css("display","flex");
+         $(".home-menu-option").css("display","none");
+
+         $(this).addClass("selected-menu-option");
+         $(".home-menu").removeClass("selected-menu-option");
+
+    })
+
+    $(".home-menu").on("click",function(){
+        console.log("home clicked");
+        $(".home-menu-option").css("display","flex");
+         $(".file-menu-option").css("display","none");
+
+         $(this).addClass("selected-menu-option");
+         $(".file-menu").removeClass("selected-menu-option");
+    })
+
 
     $(".content").on("scroll",function(){
        let left =  $(this).scrollLeft();
