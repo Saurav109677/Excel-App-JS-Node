@@ -26,22 +26,45 @@
         </div>
         <div class = "home-menu-option">
             <div class="one">
-                <div class="font-select">
-                    <select>
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
-                        <option>D</option>
+                <div class="font-div">
+                    <select style="width: 115px" id="font-style">
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="Arial" selected>Arial</option>
+                        <option value="cursive">Cursive</option>
+                        <option value="monospace">Monospace</option>
                     </select>
                 </div>
                 <div class="bold-u-italic">
-                    <div class="bold"></div>
-                    <div class="underline"></div>
-                    <div class="italic"></div>
+                    <div class="bold">
+                        <button class="bold-button">B</button>
+                    </div>
+                    <div class="underline">
+                        <button class="underline-button">U</button>
+                    </div>
+                    <div class="italic">
+                        <button class="italic-button">I</button>
+                    </div>
                 </div>
             </div>
-            <div class="two"></div>
-            <div class="three"></div>
+            <div class="two">
+                <div class="font-size-div"> 
+                    <select style="width:115px" id="font-size">
+                        <option value="14">14</option>
+                        <option value="16" selected>16</option>
+                        <option value="18">18</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="color-div">
+                    <input type="color" id="font-color">
+                    <input type="color" id="font-background">
+                </div>
+            </div>
+            <div class="three">
+                <button id="left-align">L</button>
+                <button id="center-align">C</button>
+                <button id="right-align">R</button>
+            </div>
         </div>
     </div>
 
@@ -82,7 +105,12 @@
         </div>
 </div>
 
-    <div class="sheets">Sheets</div>
+    <div class="sheets-div">
+        <div class="sheets-list">
+            <div class ="sheet active-sheet" sid="0">Sheet 1</div>
+        </div>
+        <div class="add-sheet">+</div>
+    </div>
 
     <script src="./script.js"></script>
 </body>

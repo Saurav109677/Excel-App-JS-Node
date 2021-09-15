@@ -48,6 +48,8 @@ html,body{
     background-color: white;
     max-width: 65px;
     width: 65px;
+    font-family: Arial;
+    text-align: center;
 }
 
 .row{
@@ -122,6 +124,7 @@ html,body{
 
 .home-menu-option{
     display: none;
+    /* border:1px solid; */
 }
 
 .selected-menu-option{
@@ -140,3 +143,115 @@ html,body{
 .save-option{
     margin-left: 10px;
 }
+
+.one{
+    /* border:1px solid; */
+    margin-left: 10px;
+}
+
+.two{
+    /* border:1px solid; */
+    margin-left: 10px;
+}
+
+.three{
+    /* border: 1px solid; */
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 115px;
+}
+
+.font-select{
+    /* border:1px solid; */
+}
+
+.bold-u-italic{
+    /* border: 1px solid; */
+    display: flex;
+    /* width: 115px; */
+    /* align-items: center; */
+    justify-content: space-evenly;
+}
+
+.bold{
+    margin: 3px 7px;
+    margin-left: 0px;
+}
+
+.underline{
+    margin: 3px 7px;
+}
+
+.italic{
+    margin: 3px 7px;
+    margin-right: 0px;
+}
+
+.bold-button{
+
+}
+
+.underline-button{
+    
+}
+
+.italic-button{
+    
+}
+
+.font-div{
+
+}
+
+.font-size-div{
+
+}
+
+.color-div{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.brown{
+
+}
+
+.black{
+
+}
+
+.underline-button-style{
+    background-color: lightblue
+}
+
+.sheets-div{
+    display: flex;
+}
+
+.sheets-list{
+    display: flex;
+}
+
+.add-sheet{
+    background-color: lightgreen;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+
+.sheet{
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid grey;
+}
+
+.active-sheet{
+    background-color: lightgreen;
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 10px;
+}
+

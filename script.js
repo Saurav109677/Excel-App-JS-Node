@@ -17,10 +17,189 @@ const { log } = require('console');
 
 let db = [];
 let lastCellVisited ;
+let sheetsDb = [];
+let selectedSheetIndex = 0;
 
 $("document").ready(function(){
 
     console.log("loaded")
+
+    $(".sheet").on("click",function(){
+        console.log($(this).attr("sid"));
+        $(`.sheet.active-sheet`).removeClass("active-sheet");
+        $(this).addClass("active-sheet");
+        selectedSheetIndex = $(this).attr("sid");
+        //update db
+        db = sheetsDb[selectedSheetIndex];
+        console.log("zzz",db);
+        //update ui
+        for(let i=0;i<100;i++){
+            for(let j=0;j<26;j++){
+                $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
+                $(`.cell[rid=${i}][cid=${j}]`).css("color",db[i][j].color);
+                $(`.cell[rid=${i}][cid=${j}]`).css("background-color",db[i][j].background);
+                 $(`.cell[rid=${i}][cid=${j}]`).css("text-decoration",db[i][j].underline?"underline":"");
+                 $(`.cell[rid=${i}][cid=${j}]`).css("align-text",db[i][j].align);
+                $(`.cell[rid=${i}][cid=${j}]`).css("font-family",db[i][j].font);
+                 $(`.cell[rid=${i}][cid=${j}]`).css("font-size",db[i][j].size+"px");
+                  $(`.cell[rid=${i}][cid=${j}]`).css("font-style",db[i][j].italic?"italic":"");
+                $(`.cell[rid=${i}][cid=${j}]`).css("font-weight",db[i][j].bold?"bold":"");
+            }
+        }
+
+    })
+
+    $(".add-sheet").on("click",function(){
+        $(`.sheet.active-sheet`).removeClass("active-sheet");
+        let newSheetDiv = `<div class ="sheet active-sheet" sid="${sheetsDb.length}">Sheet ${sheetsDb.length+1}</div>`
+        $(".sheets-list").append(newSheetDiv);
+        $("#address").val("");
+        init();
+        // console.log(sheetsDb);
+        // update ui
+        for(let i=0;i<100;i++){
+            for(let j=0;j<26;j++){
+                $(`.cell[rid=${i}][cid=${j}]`).html("");
+                $(`.cell[rid=${i}][cid=${j}]`).attr("style","");
+            }
+        }
+
+        $(".sheet.active-sheet").on("click",function(){
+            // console.log($(this).attr("sid"));
+            $(`.sheet.active-sheet`).removeClass("active-sheet");
+            $(this).addClass("active-sheet");
+            selectedSheetIndex = $(this).attr("sid");
+            //update db
+            db = sheetsDb[selectedSheetIndex];
+            console.log("zzz",db);
+            //update ui
+            for(let i=0;i<100;i++){
+                for(let j=0;j<26;j++){
+                    $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
+                    $(`.cell[rid=${i}][cid=${j}]`).css("color",db[i][j].color);
+                    $(`.cell[rid=${i}][cid=${j}]`).css("background-color",db[i][j].background);
+                    $(`.cell[rid=${i}][cid=${j}]`).css("text-decoration",db[i][j].underline?"underline":"");
+                    $(`.cell[rid=${i}][cid=${j}]`).css("align-text",db[i][j].align);
+                    $(`.cell[rid=${i}][cid=${j}]`).css("font-family",db[i][j].font);
+                    $(`.cell[rid=${i}][cid=${j}]`).css("font-size",db[i][j].size+"px");
+                    $(`.cell[rid=${i}][cid=${j}]`).css("font-style",db[i][j].italic?"italic":"");
+                    $(`.cell[rid=${i}][cid=${j}]`).css("font-weight",db[i][j].bold?"bold":"");
+                }
+            }
+        })
+
+    })
+
+
+    $("#font-color").change(function(){
+        let newColor = $(this).val();
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+         $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("color",newColor);  
+        db[lastCellRowId][lastCellColId].color = newColor;
+    })
+
+     $("#font-background").change(function(){
+        let newColor = $(this).val();
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+         $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("background-color",newColor);  
+         db[lastCellRowId][lastCellColId].background = newColor;
+    })
+
+    $("#left-align").click(function(){
+          let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+         $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("text-align","left");  
+        db[lastCellRowId][lastCellColId].align = "left";
+    })
+
+     $("#center-align").click(function(){
+          let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+
+           $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("text-align","center");  
+             db[lastCellRowId][lastCellColId].align = "center";
+    })
+
+     $("#right-align").click(function(){
+          let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+         $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("text-align","right");  
+         db[lastCellRowId][lastCellColId].align = "right";
+    })
+
+    $("#font-size").click(function(){
+         let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+
+        // let size = db[lastCellRowId][lastCellColId].size;
+        let newSize = this.value;
+         db[lastCellRowId][lastCellColId].size = newSize;
+        $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("font-size",newSize+"px");
+    })
+
+     $(".underline-button").click(function(){
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+    
+        db[lastCellRowId][lastCellColId].underline = !db[lastCellRowId][lastCellColId].underline;
+        let style = "none"
+        if(db[lastCellRowId][lastCellColId].underline){
+            style = "underline";
+            $(".underline-button").addClass("underline-button-style");
+        }
+        else{
+            $(".underline-button").removeClass("underline-button-style");
+        }
+    
+        $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("text-decoration",style);
+        
+    })
+
+    $(".italic-button").click(function(){
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+    
+        db[lastCellRowId][lastCellColId].italic = !db[lastCellRowId][lastCellColId].italic;
+        let style ="normal";
+        if(db[lastCellRowId][lastCellColId].italic){
+            style = "italic";
+            $('.italic-button').css("background-color","lightblue");
+        }
+        else{
+            $('.italic-button').css("background-color","");
+        }    
+        $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("font-style",style);
+        
+    })
+
+
+    $(".bold-button").click(function(){
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+    
+        db[lastCellRowId][lastCellColId].bold = !db[lastCellRowId][lastCellColId].bold;
+        let boldWeight ="normal";
+        if(db[lastCellRowId][lastCellColId].bold){
+            boldWeight = "bold";
+            $('.bold-button').css("background-color","lightblue");
+        }
+        else{
+            $('.bold-button').css("background-color","");
+        }    
+        $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("font-weight",boldWeight);
+        
+    })
+
+    $("#font-style").on("change",function(){
+        // console.log($(this).val());
+        // console.log(this.value);
+        let lastCellRowId = $(lastCellVisited).attr("rid");
+        let lastCellColId = $(lastCellVisited).attr("cid");
+        $(`.cell[rid=${lastCellRowId}][cid=${lastCellColId}]`).css("font-family",this.value);
+        db[lastCellRowId][lastCellColId].font = this.value;
+    })
 
     $(".new-option").on("click",function(){
         db=[] ;
@@ -29,15 +208,26 @@ $("document").ready(function(){
             for(let j=0;j<26;j++){
                 let cellAdd = String.fromCharCode(65+j)+(i+1);
                  let cellObject = {
-                     name : cellAdd,
-                     value : "",
-                     formula : "",
-                     childrens : [],
-                     parents : []
+                        name : cellAdd,
+                        value : "",
+                        formula : "",
+                        childrens : [],
+                        parents : [],
+                        font : "Arial",
+                        bold : false ,
+                        underline : false,
+                        italic : false,
+                        size : "16",
+                        align : "center",
+                        color : "",
+                        background : ""
                  }
     
                 row.push(cellObject);
                 $(`.cell[rid=${i}][cid=${j}]`).html("");
+                $(`.cell[rid=${i}][cid=${j}]`).attr("style","");
+                
+                
             }
             db.push(row);
            
@@ -54,6 +244,14 @@ $("document").ready(function(){
         for(let i=0;i<100;i++){
             for(let j=0;j<26;j++){
                 $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
+                $(`.cell[rid=${i}][cid=${j}]`).css("color",db[i][j].color);
+                $(`.cell[rid=${i}][cid=${j}]`).css("background-color",db[i][j].background);
+                 $(`.cell[rid=${i}][cid=${j}]`).css("text-decoration",db[i][j].underline?"underline":"");
+                 $(`.cell[rid=${i}][cid=${j}]`).css("align-text",db[i][j].align);
+                $(`.cell[rid=${i}][cid=${j}]`).css("font-family",db[i][j].font);
+                 $(`.cell[rid=${i}][cid=${j}]`).css("font-size",db[i][j].size+"px");
+                  $(`.cell[rid=${i}][cid=${j}]`).css("font-style",db[i][j].italic?"italic":"");
+                $(`.cell[rid=${i}][cid=${j}]`).css("font-weight",db[i][j].bold?"bold":"");
             }
         }
         
@@ -114,6 +312,29 @@ $("document").ready(function(){
         
         $("#address").val(cellAdd);
         $("#formula").val(db[rowId-1][colId].formula);
+        $("#font-style").val(db[rowId-1][colId].font);
+        $("#font-size").val(db[rowId-1][colId].size)
+
+        //bold
+        if(db[rowId-1][colId].bold)
+             $('.bold-button').css("background-color","lightblue");
+        else    
+             $('.bold-button').css("background-color","");
+
+        //italic
+        if(db[rowId-1][colId].italic)
+             $('.italic-button').css("background-color","lightblue");
+        else    
+            $('.italic-button').css("background-color","");
+
+        //underline
+        if(db[rowId-1][colId].underline)
+             $('.underline-button').addClass("underline-button-style");
+        else    
+            $('.underline-button').removeClass("underline-button-style");
+
+        $('#font-color').val(db[rowId-1][colId].color);
+        $('#font-background').val(db[rowId-1][colId].background);
     })
 
     $("#formula").on("blur", function(){
@@ -236,6 +457,7 @@ $("document").ready(function(){
 
 
 function init(){
+    let newDb = [];
     for(let i=0;i<100;i++){
         let row=[];
         for(let j=0;j<26;j++){
@@ -245,13 +467,24 @@ function init(){
                  value : "",
                  formula : "",
                  childrens : [],
-                 parents : []
+                 parents : [],
+                 font : "Arial",
+                 bold : false ,
+                 underline : false,
+                 italic : false,
+                 size : "16",
+                 align : "center",
+                 color : "",
+                 background : ""
              }
 
             row.push(cellObject);
         }
-        db.push(row);
+        newDb.push(row);  
     }
+    db = newDb;
+    sheetsDb.push(newDb);
+    console.log(sheetsDb);
 }
 
 init();
