@@ -18,7 +18,7 @@ const { log } = require('console');
 let db = [];
 let lastCellVisited ;
 let sheetsDb = [];
-let selectedSheetIndex = 0;
+let selectedSheetIndex=0 ;
 
 $("document").ready(function(){
 
@@ -28,24 +28,14 @@ $("document").ready(function(){
         console.log($(this).attr("sid"));
         $(`.sheet.active-sheet`).removeClass("active-sheet");
         $(this).addClass("active-sheet");
+        // remove the previos data
+        removePreviousData(selectedSheetIndex)
         selectedSheetIndex = $(this).attr("sid");
         //update db
-        db = sheetsDb[selectedSheetIndex];
+        db = sheetsDb[selectedSheetIndex].db;
         console.log("zzz",db);
         //update ui
-        for(let i=0;i<100;i++){
-            for(let j=0;j<26;j++){
-                $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
-                $(`.cell[rid=${i}][cid=${j}]`).css("color",db[i][j].color);
-                $(`.cell[rid=${i}][cid=${j}]`).css("background-color",db[i][j].background);
-                 $(`.cell[rid=${i}][cid=${j}]`).css("text-decoration",db[i][j].underline?"underline":"");
-                 $(`.cell[rid=${i}][cid=${j}]`).css("align-text",db[i][j].align);
-                $(`.cell[rid=${i}][cid=${j}]`).css("font-family",db[i][j].font);
-                 $(`.cell[rid=${i}][cid=${j}]`).css("font-size",db[i][j].size+"px");
-                  $(`.cell[rid=${i}][cid=${j}]`).css("font-style",db[i][j].italic?"italic":"");
-                $(`.cell[rid=${i}][cid=${j}]`).css("font-weight",db[i][j].bold?"bold":"");
-            }
-        }
+        updateUI();
 
     })
 
@@ -54,6 +44,9 @@ $("document").ready(function(){
         let newSheetDiv = `<div class ="sheet active-sheet" sid="${sheetsDb.length}">Sheet ${sheetsDb.length+1}</div>`
         $(".sheets-list").append(newSheetDiv);
         $("#address").val("");
+
+        selectedSheetIndex=`${sheetsDb.length}`;
+
         init();
         // console.log(sheetsDb);
         // update ui
@@ -68,28 +61,48 @@ $("document").ready(function(){
             // console.log($(this).attr("sid"));
             $(`.sheet.active-sheet`).removeClass("active-sheet");
             $(this).addClass("active-sheet");
+
+            // remove the previos data
+            removePreviousData(selectedSheetIndex)
+
             selectedSheetIndex = $(this).attr("sid");
             //update db
-            db = sheetsDb[selectedSheetIndex];
+            db = sheetsDb[selectedSheetIndex].db;
             console.log("zzz",db);
             //update ui
-            for(let i=0;i<100;i++){
-                for(let j=0;j<26;j++){
-                    $(`.cell[rid=${i}][cid=${j}]`).text(db[i][j].value);
-                    $(`.cell[rid=${i}][cid=${j}]`).css("color",db[i][j].color);
-                    $(`.cell[rid=${i}][cid=${j}]`).css("background-color",db[i][j].background);
-                    $(`.cell[rid=${i}][cid=${j}]`).css("text-decoration",db[i][j].underline?"underline":"");
-                    $(`.cell[rid=${i}][cid=${j}]`).css("align-text",db[i][j].align);
-                    $(`.cell[rid=${i}][cid=${j}]`).css("font-family",db[i][j].font);
-                    $(`.cell[rid=${i}][cid=${j}]`).css("font-size",db[i][j].size+"px");
-                    $(`.cell[rid=${i}][cid=${j}]`).css("font-style",db[i][j].italic?"italic":"");
-                    $(`.cell[rid=${i}][cid=${j}]`).css("font-weight",db[i][j].bold?"bold":"");
-                }
-            }
+                updateUI();
+           
         })
 
     })
 
+    function removePreviousData(index){
+        let modifiedCellObj = sheetsDb[index].visitedCell;
+        // console.log(selectedSheetIndex, modifiedCellObj);
+
+        for(let i=0;i<modifiedCellObj.length;i++){
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).html("")
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).attr("style","");
+            
+        }
+    }
+
+    function updateUI(){
+        let modifiedCellObj = sheetsDb[selectedSheetIndex].visitedCell;
+        // console.log(selectedSheetIndex, modifiedCellObj);
+
+        for(let i=0;i<modifiedCellObj.length;i++){
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).text(modifiedCellObj[i].value);
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("color",modifiedCellObj[i].color);
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("background-color",modifiedCellObj[i].background);
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("text-decoration",modifiedCellObj[i].underline?"underline":"");
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("align-text",modifiedCellObj[i].align);
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("font-family",modifiedCellObj[i].font);
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("font-size",modifiedCellObj[i].size+"px");
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("font-style",modifiedCellObj[i].italic?"italic":"");
+            $(`.cell[rid=${modifiedCellObj[i].rowId}][cid=${modifiedCellObj[i].colId}]`).css("font-weight",modifiedCellObj[i].bold?"bold":"");
+        }
+    }
 
     $("#font-color").change(function(){
         let newColor = $(this).val();
@@ -202,9 +215,10 @@ $("document").ready(function(){
     })
 
     $(".new-option").on("click",function(){
-        db=[] ;
+        let newDb = [];
         for(let i=0;i<100;i++){
             let row=[];
+            sheetsDb = [];
             for(let j=0;j<26;j++){
                 let cellAdd = String.fromCharCode(65+j)+(i+1);
                  let cellObject = {
@@ -226,12 +240,20 @@ $("document").ready(function(){
                 row.push(cellObject);
                 $(`.cell[rid=${i}][cid=${j}]`).html("");
                 $(`.cell[rid=${i}][cid=${j}]`).attr("style","");
-                
+                $(`.sheets-list`).html("");
+                let newSheetDiv = `<div class ="sheet active-sheet" sid="${sheetsDb.length}">Sheet ${sheetsDb.length+1}</div>`
+                $(".sheets-list").append(newSheetDiv);   
                 
             }
-            db.push(row);
+            newDb.push(row); 
            
         }
+        db = newDb;
+        sheetsDb.push({
+            db: newDb,
+            visitedCell:[]
+        });
+
     })
 
     $(".open-option").on("click",function(){
@@ -419,7 +441,23 @@ $("document").ready(function(){
         // updates its children cell too
         updateChildren(cellObj);
 
-        console.log(db);
+        console.log(selectedSheetIndex,db);
+         
+        let isAvailAlready = false;
+
+        sheetsDb[selectedSheetIndex].visitedCell.map((obj)=>{
+            if(obj.rowId == rowId && obj.colId == colId)
+                isAvailAlready = true;
+        })
+       
+        if(!isAvailAlready)
+            sheetsDb[selectedSheetIndex].visitedCell.push({
+                ...cellObj,
+                rowId,
+                colId
+            });
+
+        console.log(isAvailAlready ,  sheetsDb);
     })
 
     function updateChildren(cellObj){
@@ -483,7 +521,10 @@ function init(){
         newDb.push(row);  
     }
     db = newDb;
-    sheetsDb.push(newDb);
+    sheetsDb.push({
+        db: newDb,
+        visitedCell:[]
+    });
     console.log(sheetsDb);
 }
 
