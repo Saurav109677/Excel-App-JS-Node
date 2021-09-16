@@ -216,9 +216,10 @@ $("document").ready(function(){
 
     $(".new-option").on("click",function(){
         let newDb = [];
+        sheetsDb = [];
+        selectedSheetIndex=0;
         for(let i=0;i<100;i++){
             let row=[];
-            sheetsDb = [];
             for(let j=0;j<26;j++){
                 let cellAdd = String.fromCharCode(65+j)+(i+1);
                  let cellObject = {
@@ -239,13 +240,32 @@ $("document").ready(function(){
     
                 row.push(cellObject);
                 $(`.cell[rid=${i}][cid=${j}]`).html("");
-                $(`.cell[rid=${i}][cid=${j}]`).attr("style","");
-                $(`.sheets-list`).html("");
-                let newSheetDiv = `<div class ="sheet active-sheet" sid="${sheetsDb.length}">Sheet ${sheetsDb.length+1}</div>`
-                $(".sheets-list").append(newSheetDiv);   
+                $(`.cell[rid=${i}][cid=${j}]`).attr("style","");   
                 
             }
             newDb.push(row); 
+            $(`.sheets-list`).html("");
+            let newSheetDiv = `<div class ="sheet active-sheet" sid="${sheetsDb.length}">Sheet ${sheetsDb.length+1}</div>`
+            $(".sheets-list").append(newSheetDiv);
+
+            //adding event listener to that one sheet
+                $(".sheet.active-sheet").on("click",function(){
+                    // console.log($(this).attr("sid"));
+                    $(`.sheet.active-sheet`).removeClass("active-sheet");
+                    $(this).addClass("active-sheet");
+        
+                    // remove the previos data
+                    removePreviousData(selectedSheetIndex)
+        
+                    selectedSheetIndex = $(this).attr("sid");
+                    //update db
+                    db = sheetsDb[selectedSheetIndex].db;
+                    console.log("zzz",db);
+                    //update ui
+                        updateUI();
+                
+                        
+                })
            
         }
         db = newDb;
